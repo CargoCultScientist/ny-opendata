@@ -4,7 +4,7 @@ This repository contains instructions to run the existing script that retrieves 
 
 ## Open Task2.ipynb in Colab (one-click)
 
-Run in the browser — no local setup required.
+Run in the browser, no local setup required.
 
 Open the notebook directly in Google Colab (this link opens the notebook from this repository and commit):
 
