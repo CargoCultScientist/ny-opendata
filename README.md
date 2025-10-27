@@ -1,6 +1,6 @@
 # Task 2 - Run instructions
 
-This repository contains instructions to run the existing script that retrieves the last 10 additions from the target registry via the SODA API. Do not refactor or rename anything; the script’s API [...]
+This repository contains instructions to run the existing script that retrieves the last 10 additions from the target registry via the SODA API.
 
 ## Open Task2.ipynb in Colab (one-click)
 
