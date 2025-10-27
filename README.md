@@ -1,5 +1,8 @@
 # Task 2 - Run instructions
 
+[![Run in Colab](https://img.shields.io/badge/Colab-Open%20Task2.ipynb-orange?logo=googlecolab)](https://colab.research.google.com/github/CargoCultScientist/ny-opendata/blob/93c2d69e8453c19756dcb8a4229acb5e5c9d34e0/Task2.ipynb)
+[![Launch JupyterLab](https://img.shields.io/badge/JupyterLab-Start%20Locally-blue?logo=jupyter)](#method-c---run-locally)
+
 This repository contains instructions to run the existing notebook that retrieves the last 10 additions from the target registry via the SODA API and saves a full snapshot of the dataset to disk.
 
 ## Open Task2.ipynb in Colab (one-click)
