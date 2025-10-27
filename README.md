@@ -75,6 +75,7 @@ Then run the remaining cells.
 - If you prefer installing packages individually:
   ```bash
   pip install pandas requests jupyterlab
+  pip install requests pandas jupyterlab
   ```
 
 3. Provide both credentials to the environment (do NOT hardcode)
