@@ -1,6 +1,6 @@
 # Task 2 - Run instructions
 
-This repository contains instructions to run the existing script that retrieves the last 10 additions from the target registry via the SODA API.
+This repository contains instructions to run the existing notebook that retrieves the last 10 additions from the target registry via the SODA API and saves a full snapshot of the dataset to disk.
 
 ## Open Task2.ipynb in Colab (one-click)
 
@@ -10,25 +10,25 @@ Open the notebook directly in Google Colab (this link opens the notebook from th
 
 [Open Task2.ipynb in Colab](https://colab.research.google.com/github/CargoCultScientist/ny-opendata/blob/93c2d69e8453c19756dcb8a4229acb5e5c9d34e0/Task2.ipynb)
 
-## Get the API key from the source
+## Get the API keys from the source
 
-This dataset is hosted on a Socrata Open Data portal. Anonymous requests work for small pulls; using an Application Token raises rate limits.
+This dataset is hosted on a Socrata Open Data portal. The notebook authenticates with the SODA API using an Application Key ID and Application Key Secret (basic-auth style credentials).
 
-1. Sign in to the portal that hosts the dataset.  
-2. Go to your account or developer settings and create an Application Token.  
-3. Copy the token value. In this project, we store it as an environment variable named `NY_API_KEY` to match the screenshot and the existing code.
+1. Sign in to the portal that hosts the dataset.
+2. Go to your account or developer settings and create an Application Key. Socrata returns **two separate values**: an **App Token (Key ID)** and a **Secret**.
+3. Copy both values. In this project, we store them as `NY_API_KEY_ID` and `NY_API_KEY_SECRET` to match the notebook’s variable names.
 
 Reference: [Socrata Application Tokens](https://dev.socrata.com/docs/app-tokens.html)
 
-## Insert the token in Colab
+## Insert the tokens in Colab
 
 Choose one method.
 
 ### Method A - Colab Secrets panel
 
 1. In Colab, open the left sidebar and click the key icon labeled "Secrets".  
-2. Add a secret named **NY_API_KEY** with your token value and enable Notebook access for the current notebook.  
-3. Load it into the environment so your script can read it.
+2. Add secrets named **NY_API_KEY_ID** and **NY_API_KEY_SECRET** with your key ID and secret value. Enable Notebook access for the current notebook.
+3. The notebook will load them via `google.colab.userdata.get`.
 
 ### Method B - Secure prompt inside the notebook
 
@@ -36,10 +36,13 @@ Insert a new cell:
 
 ```python
 import os, getpass
-os.environ["NY_API_KEY"] = getpass.getpass("Paste your Application Token: ")
+os.environ["NY_API_KEY_ID"] = getpass.getpass("Paste your Application Key ID: ")
+os.environ["NY_API_KEY_SECRET"] = getpass.getpass("Paste your Application Key Secret: ")
 ```
 
 Then run the remaining cells.
+
+> **Tip:** If you prefer not to modify the notebook, you can also open the “Runtime ▶ Run all…” menu after setting the secrets—Colab will automatically prompt you for the two values when execution reaches the credential cell.
 
 ### Method C - Run locally
 
@@ -61,29 +64,31 @@ Then run the remaining cells.
 
 2. Install dependencies
 
-- If the repo has requirements.txt:
+- Use the provided requirements file (kept in sync with the notebook imports):
   ```bash
   pip install -r requirements.txt
   ```
 
-- Otherwise (example):
+- If you prefer installing packages individually:
   ```bash
-  pip install requests sodapy jupyterlab
+  pip install pandas requests jupyterlab
   ```
 
-3. Provide the NY_API_KEY to the environment (do NOT hardcode)
+3. Provide both credentials to the environment (do NOT hardcode)
 
 - Temporary (session-only):
 
   - macOS / Linux:
     ```bash
-    export NY_API_KEY="your_application_token_here"
+    export NY_API_KEY_ID="your_application_key_id_here"
+    export NY_API_KEY_SECRET="your_application_key_secret_here"
     jupyter notebook Task2.ipynb
     ```
 
   - Windows PowerShell:
     ```powershell
-    $env:NY_API_KEY = "your_application_token_here"
+    $env:NY_API_KEY_ID = "your_application_key_id_here"
+    $env:NY_API_KEY_SECRET = "your_application_key_secret_here"
     jupyter notebook Task2.ipynb
     ```
 
@@ -91,9 +96,23 @@ Then run the remaining cells.
 
   Create a `.env` file containing:
   ```
-  NY_API_KEY=your_application_token_here
+  NY_API_KEY_ID=your_application_key_id_here
+  NY_API_KEY_SECRET=your_application_key_secret_here
   ```
   Add `.env` to `.gitignore` before use.
+
+   Update the credential cell at the top of the notebook to read from `os.environ` when running outside Colab:
+
+   ```python
+   import os
+
+   API_ID = os.environ.get("NY_API_KEY_ID")
+   API_SECRET = os.environ.get("NY_API_KEY_SECRET")
+   if not API_ID or not API_SECRET:
+       raise RuntimeError("Missing NY_API_KEY_ID or NY_API_KEY_SECRET environment variables")
+   ```
+
+   Comment out the `from google.colab import userdata` import when using this fallback.
 
 4. Run the notebook or script
 
@@ -113,5 +132,5 @@ Then run the remaining cells.
 5. Quick safety checklist
 
 - Add `.env` and any secret files to `.gitignore`.  
-- Never commit `NY_API_KEY` or other credentials.  
+- Never commit `NY_API_KEY_ID`, `NY_API_KEY_SECRET`, or other credentials.
 - If a token is accidentally exposed, rotate it immediately.
